@@ -2,9 +2,10 @@ import { Link } from "@tanstack/react-router";
 
 const SECTIONS = [
   { id: "hero", label: "Home" },
+  { id: "profile", label: "Profile" },
   { id: "legacy", label: "Legacy Score" },
   { id: "letter", label: "Future Letter" },
-  { id: "ripple", label: "Ripple Engine" },
+  { id: "ripple", label: "Ripple" },
   { id: "mentors", label: "Mentors" },
   { id: "passport", label: "Passport" },
   { id: "simulator", label: "Simulator" },
