@@ -1,4 +1,5 @@
-import { LEGACY_SCORES, LEGACY_RATING } from "@/lib/earthverse-data";
+import { LEGACY_SCORES } from "@/lib/earthverse-data";
+import { useLifestyle } from "@/lib/lifestyle-context";
 
 export function SectionHeader({
   eyebrow,
@@ -23,18 +24,27 @@ export function SectionHeader({
 }
 
 export function ClimateLegacyScore() {
+  const { impact } = useLifestyle();
+
+  // Merge static descriptors with live values
+  const scores = [
+    { ...LEGACY_SCORES[0], value: impact.airScore },
+    { ...LEGACY_SCORES[1], value: impact.waterScore },
+    { ...LEGACY_SCORES[2], value: impact.bioScore },
+  ];
+
   return (
     <section id="legacy" className="relative py-20">
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeader
           eyebrow="Feature 01 · Climate Legacy Score"
           title={<>What your habits leave for <span className="text-aurora">2050</span>.</>}
-          desc="A projection of how your present-day environmental behavior shapes the air, water, and biodiversity available to future generations."
+          desc="A projection of how your present-day environmental behavior shapes the air, water, and biodiversity available to future generations. Updates live from your profile above."
         />
 
         <div className="mt-12 grid lg:grid-cols-[2fr_1fr] gap-6">
           <div className="grid sm:grid-cols-3 gap-4">
-            {LEGACY_SCORES.map((s) => (
+            {scores.map((s) => (
               <div key={s.label} className="glass rounded-3xl p-6 relative overflow-hidden group">
                 <div className={`absolute -top-12 -right-12 h-32 w-32 rounded-full bg-gradient-to-br ${s.color} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity`} />
                 <div className="relative">
@@ -42,7 +52,10 @@ export function ClimateLegacyScore() {
                     {s.label}
                   </div>
                   <div className="mt-3 flex items-baseline gap-1.5">
-                    <span className={`font-display text-5xl font-semibold bg-gradient-to-br ${s.color} bg-clip-text text-transparent`}>
+                    <span
+                      key={s.value}
+                      className={`font-display text-5xl font-semibold bg-gradient-to-br ${s.color} bg-clip-text text-transparent`}
+                    >
                       {s.value}
                     </span>
                     <span className="text-sm text-muted-foreground">/ 100</span>
@@ -51,13 +64,14 @@ export function ClimateLegacyScore() {
 
                   <div className="mt-5 h-1.5 rounded-full bg-white/5 overflow-hidden">
                     <div
+                      key={s.value}
                       className={`h-full rounded-full bg-gradient-to-r ${s.color} animate-meter`}
                       style={{ width: `${s.value}%` }}
                     />
                   </div>
 
                   <div className="mt-4 inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/5 text-[10px] font-mono text-emerald-400">
-                    ▲ {s.delta}
+                    {s.value >= 60 ? "▲" : "▼"} {s.delta}
                   </div>
                   <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
                     {s.detail}
@@ -74,13 +88,16 @@ export function ClimateLegacyScore() {
                 Climate Legacy Rating
               </div>
               <div className="mt-4 flex items-baseline gap-3">
-                <div className="font-display text-7xl font-bold text-aurora leading-none">
-                  {LEGACY_RATING.grade}
+                <div
+                  key={impact.grade}
+                  className="font-display text-7xl font-bold text-aurora leading-none animate-meter"
+                >
+                  {impact.grade}
                 </div>
-                <div className="text-sm font-medium">{LEGACY_RATING.label}</div>
+                <div className="text-sm font-medium">{impact.ratingLabel}</div>
               </div>
               <p className="mt-6 text-sm leading-relaxed text-foreground/85">
-                "{LEGACY_RATING.summary}"
+                "{impact.summary}"
               </p>
 
               <div className="mt-6 grid grid-cols-2 gap-2 text-xs">
@@ -89,8 +106,8 @@ export function ClimateLegacyScore() {
                   <div className="font-display text-lg mt-1">2026 → 2050</div>
                 </div>
                 <div className="glass rounded-xl p-3">
-                  <div className="font-mono text-muted-foreground">Confidence</div>
-                  <div className="font-display text-lg mt-1">87%</div>
+                  <div className="font-mono text-muted-foreground">Pathway</div>
+                  <div className="font-display text-lg mt-1">+{impact.trajectoryC.toFixed(1)}°C</div>
                 </div>
               </div>
             </div>
