@@ -160,16 +160,68 @@ export function LifestyleInputs() {
               </div>
             </div>
 
-            <div className="relative mt-7 flex items-center justify-between gap-3 text-xs">
-              <div className="font-mono text-muted-foreground">
-                Profile autosaves to your in-session passport
+            <div className="relative mt-7 space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="text"
+                  value={profileName}
+                  onChange={(e) => setProfileName(e.target.value.slice(0, 40))}
+                  placeholder="Name this profile (e.g. Weekday me)"
+                  className="flex-1 min-w-[200px] px-3 py-2 rounded-full glass text-xs bg-white/[0.03] border border-white/10 focus:outline-none focus:ring-2 focus:ring-cyan-400/40 placeholder:text-muted-foreground"
+                  aria-label="Profile name"
+                />
+                <button
+                  onClick={() => {
+                    if (profileName.trim()) {
+                      saveProfile(profileName);
+                      setProfileName("");
+                    }
+                  }}
+                  disabled={!profileName.trim()}
+                  className="px-3 py-2 rounded-full text-xs font-medium bg-[var(--gradient-cyber)] text-primary-foreground glow-ring disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  💾 Save profile
+                </button>
+                <button
+                  onClick={reset}
+                  className="px-3 py-2 rounded-full text-xs glass hover:bg-white/5 transition-colors"
+                >
+                  ↺ Reset
+                </button>
               </div>
-              <button
-                onClick={reset}
-                className="px-3 py-1.5 rounded-full glass hover:bg-white/5 transition-colors"
-              >
-                ↺ Reset to defaults
-              </button>
+
+              {profiles.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1">
+                    Saved
+                  </span>
+                  {profiles.map((p) => (
+                    <span
+                      key={p.name}
+                      className="inline-flex items-center gap-1 rounded-full glass text-xs pl-3 pr-1 py-1 ring-1 ring-white/5"
+                    >
+                      <button
+                        onClick={() => loadProfile(p.name)}
+                        className="hover:text-aurora transition-colors"
+                        title={`Load · saved ${new Date(p.savedAt).toLocaleDateString()}`}
+                      >
+                        {p.name}
+                      </button>
+                      <button
+                        onClick={() => deleteProfile(p.name)}
+                        className="h-5 w-5 inline-flex items-center justify-center rounded-full hover:bg-rose-400/20 text-muted-foreground hover:text-rose-300 transition"
+                        aria-label={`Delete ${p.name}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="text-[11px] font-mono text-muted-foreground">
+                Active profile autosaves locally · Legacy Score & Letter persist across sessions
+              </div>
             </div>
           </div>
 
