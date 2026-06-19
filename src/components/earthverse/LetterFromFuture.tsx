@@ -2,6 +2,107 @@ import { useMemo, useState } from "react";
 import { generateLetter, useLifestyle } from "@/lib/lifestyle-context";
 import { SectionHeader } from "./ClimateLegacyScore";
 
+async function downloadLetterPdf(opts: {
+  letter: ReturnType<typeof generateLetter>;
+  grade: string;
+  overall: number;
+  annualTCO2e: number;
+  tone: string;
+}) {
+  const { jsPDF } = await import("jspdf");
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const M = 56;
+
+  // Deep space background
+  doc.setFillColor(10, 14, 26);
+  doc.rect(0, 0, W, H, "F");
+  // Aurora accent band
+  doc.setFillColor(40, 80, 140);
+  doc.rect(0, 0, W, 6, "F");
+  doc.setFillColor(120, 70, 200);
+  doc.rect(0, 6, W, 2, "F");
+
+  // Header chip
+  doc.setTextColor(160, 180, 210);
+  doc.setFont("courier", "normal");
+  doc.setFontSize(8);
+  doc.text("EARTHVERSE AI · TEMPORAL DELIVERY · CLASSIFIED", M, M);
+
+  // Title
+  doc.setTextColor(245, 248, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  const titleLines = doc.splitTextToSize(opts.letter.headline, W - M * 2);
+  doc.text(titleLines, M, M + 28);
+  let y = M + 28 + titleLines.length * 24;
+
+  // Meta block
+  doc.setDrawColor(60, 78, 110);
+  doc.setLineWidth(0.5);
+  doc.line(M, y + 6, W - M, y + 6);
+  y += 22;
+  doc.setFont("courier", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(160, 180, 210);
+  const meta = [
+    ["From", opts.letter.from],
+    ["Sent", "April 14, 2050"],
+    ["Trajectory", opts.letter.trajectory],
+    ["Confidence", opts.letter.confidence],
+    ["Profile grade", `${opts.grade} · ${opts.overall}/100`],
+    ["Annual footprint", `${opts.annualTCO2e} tCO₂e`],
+  ];
+  meta.forEach(([k, v]) => {
+    doc.setTextColor(140, 160, 190);
+    doc.text(String(k).toUpperCase(), M, y);
+    doc.setTextColor(235, 240, 250);
+    doc.text(String(v), M + 110, y);
+    y += 14;
+  });
+  y += 8;
+  doc.line(M, y, W - M, y);
+  y += 20;
+
+  // Body
+  doc.setFont("times", "normal");
+  doc.setFontSize(12);
+  doc.setTextColor(235, 240, 250);
+  const bodyLines = doc.splitTextToSize(opts.letter.body, W - M * 2);
+  const lineH = 17;
+  for (const line of bodyLines) {
+    if (y > H - M - 60) {
+      doc.addPage();
+      doc.setFillColor(10, 14, 26);
+      doc.rect(0, 0, W, H, "F");
+      doc.setFillColor(40, 80, 140);
+      doc.rect(0, 0, W, 6, "F");
+      y = M;
+    }
+    doc.text(line, M, y);
+    y += lineH;
+  }
+
+  // Footer signature band
+  const footY = H - M - 30;
+  doc.setDrawColor(60, 78, 110);
+  doc.line(M, footY, W - M, footY);
+  doc.setFont("courier", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(140, 160, 190);
+  doc.text(
+    `Signed via temporal cryptography · tone:${opts.tone} · earthverse.ai`,
+    M,
+    footY + 14,
+  );
+  doc.text(`Generated ${new Date().toLocaleString()}`, M, footY + 26);
+
+  doc.save(`letter-from-2050-${opts.tone}-${opts.overall}.pdf`);
+}
+
+
+
 export function LetterFromFuture() {
   const { lifestyle, impact } = useLifestyle();
   const [override, setOverride] = useState<"auto" | "positive" | "negative">("auto");
