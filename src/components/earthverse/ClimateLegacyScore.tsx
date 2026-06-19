@@ -1,5 +1,6 @@
 import { LEGACY_SCORES } from "@/lib/earthverse-data";
 import { useLifestyle } from "@/lib/lifestyle-context";
+import { LegacyBreakdown } from "./LegacyBreakdown";
 
 export function SectionHeader({
   eyebrow,
