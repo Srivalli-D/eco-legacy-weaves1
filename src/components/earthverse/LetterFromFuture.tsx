@@ -143,7 +143,22 @@ export function LetterFromFuture() {
               {t.label}
             </button>
           ))}
-          <div className="ml-auto hidden sm:flex items-center gap-2 text-xs font-mono text-muted-foreground">
+          <button
+            onClick={() =>
+              downloadLetterPdf({
+                letter,
+                grade: impact.grade,
+                overall: impact.overall,
+                annualTCO2e: impact.annualTCO2e,
+                tone: activeTone,
+              })
+            }
+            className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium glass hover:bg-white/10 transition-all ring-1 ring-white/10"
+            aria-label="Download letter as PDF"
+          >
+            <span aria-hidden>⬇</span> Download premium PDF
+          </button>
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-pulse" />
             Regenerated for profile · {Math.round(impact.overall)}/100
           </div>
