@@ -114,6 +114,8 @@ export function ClimateLegacyScore() {
             </div>
           </div>
         </div>
+
+        <LegacyBreakdown />
       </div>
     </section>
   );
