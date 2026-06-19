@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   useLifestyle,
   type DietType,
