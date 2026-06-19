@@ -69,7 +69,9 @@ function PillGroup<T extends string>({ label, options, value, onChange }: PillGr
 }
 
 export function LifestyleInputs() {
-  const { lifestyle, setLifestyle, impact, reset } = useLifestyle();
+  const { lifestyle, setLifestyle, impact, reset, profiles, saveProfile, loadProfile, deleteProfile } =
+    useLifestyle();
+  const [profileName, setProfileName] = useState("");
 
   // Validation — bound numeric inputs to safe ranges (security: never trust raw input)
   const setFlights = (n: number) =>
