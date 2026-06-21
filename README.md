@@ -61,7 +61,7 @@ https://earth-legacy-weave.lovable.app/
 
 ## GitHub Repository
 
-Public repository for hackathon submission.
+https://github.com/Srivalli-D/eco-legacy-weaves1
 
 
 ## License
