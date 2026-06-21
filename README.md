@@ -56,8 +56,7 @@ EarthVerse AI introduces:
 - Multi-user global sustainability competitions
 
 ## Live Demo
-
-Add your Vercel deployment link here
+Lovable Link
 https://earth-legacy-weave.lovable.app/
 
 ## GitHub Repository
