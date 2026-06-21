@@ -58,10 +58,12 @@ EarthVerse AI introduces:
 ## Live Demo
 
 Add your Vercel deployment link here
+https://earth-legacy-weave.lovable.app/
 
 ## GitHub Repository
 
 Public repository for hackathon submission.
+
 
 ## License
 
